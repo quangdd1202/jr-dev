@@ -40,7 +40,7 @@ export const IceBreaker: React.FC<IceBreakerProps> = ({
   // base row container
   const base = twclsx(
     'group relative flex w-full items-center gap-4 rounded-xl border bg-white p-2 text-left',
-    'border-gray-200 shadow-sm cursor-pointer',
+    'border-gray-200 cursor-pointer',
     // hover/active visuals
     'hover:border-blue-500 hover:bg-blue-50',
     // active && 'border-blue-500 bg-blue-50 ring-2 ring-blue-500/30',
