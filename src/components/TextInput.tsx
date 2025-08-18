@@ -43,15 +43,17 @@ export const TextInput: React.FC<TextInputProps> = ({
   );
 
   return (
-    <label className={wrapperClasses}>
+    <div className={wrapperClasses}>
       {leftIcon && (
         <span className="inline-flex shrink-0 text-gray-500">{leftIcon}</span>
       )}
-      <input className={inputClasses} {...rest} />
+      <label className="block w-full">
+        <input className={inputClasses} {...rest} />
+      </label>
       {rightIcon && (
         <span className="inline-flex shrink-0 text-gray-500">{rightIcon}</span>
       )}
-    </label>
+    </div>
   );
 };
 
