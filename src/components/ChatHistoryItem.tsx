@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { twclsx } from '@/utils/twclsx';
-import AiScannerRobotIcon from '../../public/icons/streamline-flex_ai-scanner-robot.svg';
+import AiScannerRobotIcon from '@/public/icons/streamline-flex_ai-scanner-robot.svg';
 
 import type { ReactNode, MouseEventHandler } from 'react';
 
@@ -14,7 +15,11 @@ export interface ChatHistoryItemProps {
   /** Mark item as active/selected. */
   active?: boolean;
   /** Optional click handler (row becomes button-like). */
-  onClick?: MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
+  /** When provided, the item renders as a Next.js Link for navigation. */
+  href?: string;
+  /** Whether Next.js should prefetch the route (defaults to true). */
+  prefetch?: boolean;
   /** Extra classes for the outer container. */
   className?: string;
   /** Accessible label if label is not descriptive text. */
@@ -26,30 +31,29 @@ export interface ChatHistoryItemProps {
  * Small row used in a sidebar list of conversations.
  * - Left: 24px icon (uses a default when none provided)
  * - Right: single-line text that truncates with ellipsis
+ * - Renders a Next.js <Link> when href is provided (supports prefetch)
  */
 export const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
   label,
   icon,
   active,
   onClick,
+  href,
+  prefetch = true,
   className,
   ariaLabel,
 }) => {
   const classes = twclsx(
     'flex items-center gap-3 rounded-lg px-3 py-2',
     'cursor-pointer select-none',
-    'text-[#090A0A] hover:bg-gray-50',
-    active && 'font-semibold text-blue-600 bg-blue-50',
+    'text-[#090A0A] hover:bg-gray-200 active:bg-gray-200',
+    active &&
+      'font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 active:bg-blue-200',
     className,
   );
 
-  return (
-    <button
-      type="button"
-      aria-label={ariaLabel}
-      className={classes}
-      onClick={onClick}
-    >
+  const content = (
+    <>
       {/* Left icon */}
       <div
         className={twclsx(
@@ -64,6 +68,31 @@ export const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
       <div className="min-w-0 flex-1">
         <span className="block truncate text-left">{label}</span>
       </div>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        prefetch={prefetch}
+        aria-label={ariaLabel}
+        className={classes}
+        onClick={onClick}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      aria-label={ariaLabel}
+      className={classes}
+      onClick={onClick}
+    >
+      {content}
     </button>
   );
 };
