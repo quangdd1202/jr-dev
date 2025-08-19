@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Button from '@/components/Button';
 import TextInput from '@/components/TextInput';
@@ -12,8 +12,15 @@ import SendIcon from '@/public/icons/send.svg';
 import MicIcon from '@/public/icons/microphone.svg';
 import UserIcon from '@/public/icons/streamline_user-multiple-group.svg';
 import Link from 'next/link';
+import SlideUp from '@/components/SlideUp';
+import Recorder from '@/components/Recorder';
+import ClockIcon from '@/public/icons/streamline-flex_time-lapse.svg';
+import ChevronDownIcon from '@/public/icons/chevron-down.svg';
+import TranslationHistoryCard from '@/components/TranslationHistoryCard';
+import { ChevronRight } from 'lucide-react';
 
 export default function Home() {
+  const [voiceOpen, setVoiceOpen] = useState(false);
   return (
     <>
       {/* Sidebar */}
@@ -256,7 +263,12 @@ export default function Home() {
         <div className="mx-auto mt-auto flex w-full max-w-[768px] gap-4 pt-12 pb-4">
           <TextInput
             leftIcon={
-              <Button className="h-12 w-12 px-0" variant="secondary">
+              <Button
+                className="h-12 w-12 px-0"
+                variant="secondary"
+                aria-label="Open voice input"
+                onClick={() => setVoiceOpen(true)}
+              >
                 <MicIcon />
               </Button>
             }
@@ -270,8 +282,97 @@ export default function Home() {
           </Button>
         </div>
 
+        {/* Voice input slide-up */}
+        <SlideUp
+          open={voiceOpen}
+          onClose={() => setVoiceOpen(false)}
+          fullScreen
+        >
+          <div className="mx-auto flex h-full max-w-[1440px] flex-col">
+            <div className="flex items-center justify-between p-6">
+              <div className="flex items-center gap-2">
+                <Button variant="outline" className="bg-blue-50">
+                  <span className="flex items-center gap-3 text-base font-bold">
+                    <span>EN</span>
+                    <ChevronRight className="h-4 w-4" />
+                    <span>JP</span>
+                  </span>
+                </Button>
+
+                <Button variant="plain" leftIcon={<ChevronDownIcon />} />
+              </div>
+
+              <Button
+                leftIcon={<ChevronDownIcon />}
+                variant="plain"
+                onClick={() => setVoiceOpen(false)}
+              />
+
+              <div className="flex items-center gap-2">
+                <Button variant="outline" className="bg-blue-50">
+                  <span className="flex items-center gap-3 text-base font-bold">
+                    <span>JP</span>
+                    <ChevronRight className="h-4 w-4" />
+                    <span>EN</span>
+                  </span>
+                </Button>
+
+                <Button variant="plain" leftIcon={<ChevronDownIcon />} />
+              </div>
+            </div>
+
+            <div className="grow overflow-auto">
+              <div className="grow">
+                <Recorder />
+              </div>
+
+              <div className="flex flex-col gap-6 p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <ClockIcon />
+                    <p className="text-2xl font-bold">Translation history</p>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    className="border-gray-400 bg-gray-50 text-gray-500 hover:bg-gray-100 active:bg-gray-200"
+                  >
+                    View All
+                  </Button>
+                </div>
+
+                <div className="jsutify-between flex w-full flex-wrap gap-4">
+                  <TranslationHistoryCard
+                    fromLang="EN"
+                    toLang="JP"
+                    sourceText="こんにちは、初めまして"
+                    translatedText="Hello, nice to meet you"
+                    className="grow cursor-pointer hover:bg-gray-50 active:bg-gray-100"
+                  />
+
+                  <TranslationHistoryCard
+                    fromLang="EN"
+                    toLang="JP"
+                    sourceText="こんにちは、初めまして"
+                    translatedText="Hello, nice to meet you"
+                    className="grow cursor-pointer hover:bg-gray-50 active:bg-gray-100"
+                  />
+
+                  <TranslationHistoryCard
+                    fromLang="EN"
+                    toLang="JP"
+                    sourceText="こんにちは、初めまして"
+                    translatedText="Hello, nice to meet you"
+                    className="grow cursor-pointer hover:bg-gray-50 active:bg-gray-100"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </SlideUp>
+
         {/* Disclaimer */}
-        <div className="mx-auto mb-8 w-full max-w-[768px] text-center text-xs">
+        <div className="mx-auto mb-4 w-full max-w-[768px] text-center text-xs">
           <p>
             StormBot may produce inaccurate information about people, places, or
             fact. {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}

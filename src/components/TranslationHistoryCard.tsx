@@ -19,6 +19,8 @@ export interface TranslationHistoryCardProps {
   fullWidth?: boolean;
   /** Additional classes for the outer container */
   className?: string;
+  /** Optional click handler */
+  onClick?: () => void;
 }
 
 /**
@@ -34,6 +36,7 @@ export const TranslationHistoryCard: React.FC<TranslationHistoryCardProps> = ({
   translatedText,
   fullWidth,
   className,
+  onClick,
 }) => {
   const container = twclsx(
     'rounded-2xl border border-gray-200 bg-white p-6 shadow-sm',
@@ -42,13 +45,14 @@ export const TranslationHistoryCard: React.FC<TranslationHistoryCardProps> = ({
   );
 
   return (
-    <div className={container}>
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events
+    <div className={container} role="button" tabIndex={0} onClick={onClick}>
       {/* Languages pill */}
       <div className="mb-4">
         <Button
           variant="outline"
           // no onClick – used as a static pill
-          className="cursor-default select-none"
+          className="bg-blue-50 select-none"
         >
           <span className="flex items-center gap-3">
             <span>{fromLang}</span>

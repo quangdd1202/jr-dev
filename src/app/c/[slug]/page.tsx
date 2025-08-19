@@ -21,6 +21,7 @@ import ChevronUpIcon from '@/public/icons/line-md_chevron-up.svg';
 import ChevronDownIcon from '@/public/icons/chevron-down.svg';
 import ReloadIcon from '@/public/icons/streamline_arrow-reload-horizontal-2.svg';
 import Popup from '@/components/Popup';
+import SlideUp from '@/components/SlideUp';
 
 const SuggestedPrompts: React.FC = () => {
   const [open, setOpen] = useState(true);
@@ -84,6 +85,7 @@ const SuggestedPrompts: React.FC = () => {
 };
 
 export default function Home({ params }: { params: { slug: string } }) {
+  const [voiceOpen, setVoiceOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
   const [reasonClarity, setReasonClarity] = useState(false);
@@ -377,7 +379,12 @@ export default function Home({ params }: { params: { slug: string } }) {
                 <div className="mx-auto flex w-full max-w-[768px] gap-4">
                   <TextInput
                     leftIcon={
-                      <Button className="h-12 w-12 px-0" variant="secondary">
+                      <Button
+                        className="h-12 w-12 px-0"
+                        variant="secondary"
+                        aria-label="Open voice input"
+                        onClick={() => setVoiceOpen(true)}
+                      >
                         <MicIcon />
                       </Button>
                     }
@@ -407,6 +414,26 @@ export default function Home({ params }: { params: { slug: string } }) {
           </div>
         </main>
       </div>
+
+      {/* Voice input SlideUp */}
+      <SlideUp open={voiceOpen} onClose={() => setVoiceOpen(false)}>
+        <div className="flex flex-col items-center justify-center gap-8 py-6">
+          <div className="relative flex h-56 w-56 items-center justify-center">
+            <span className="absolute inset-0 rounded-full border-4 border-blue-300/70" />
+            <span className="absolute inset-6 rounded-full bg-gray-100" />
+            <Button
+              variant="primary"
+              size="xl"
+              className="h-24 w-24 rounded-full shadow-lg"
+            >
+              <MicIcon />
+            </Button>
+          </div>
+          <div className="text-center text-sm text-gray-500">
+            Tap to start speaking. We’ll transcribe your voice to text.
+          </div>
+        </div>
+      </SlideUp>
 
       {/* Feedback Popup */}
       <Popup
