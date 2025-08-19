@@ -1,18 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 import Button from '@/components/Button';
 import TextInput from '@/components/TextInput';
-import ChatHistoryItem from '@/components/ChatHistoryItem';
 import ConversationChatItem from '@/components/ConversationChatItem';
-import MagnifierIcon from '@/public/icons/streamline-flex_magnifying-glass.svg';
-import PlusIcon from '@/public/icons/streamline-flex_hospital-sign.svg';
+import Popup from '@/components/Popup';
+import SlideUp from '@/components/SlideUp';
+import Recorder from '@/components/Recorder';
+import TranslationHistoryCard from '@/components/TranslationHistoryCard';
+import TranslationDetails from '@/components/TranslationDetails';
+import { twclsx } from '@/utils/twclsx';
 import SendIcon from '@/public/icons/send.svg';
 import MicIcon from '@/public/icons/microphone.svg';
-import UserIcon from '@/public/icons/streamline_user-multiple-group.svg';
-import Link from 'next/link';
-import { twclsx } from '@/utils/twclsx';
 import PencilIcon from '@/public/icons/streamline_pencil.svg';
 import CategoryIcon from '@/public/icons/category.svg';
 import ShareIcon from '@/public/icons/streamline-flex_share-link.svg';
@@ -20,8 +21,8 @@ import RecycleBinIcon from '@/public/icons/streamline_recycle-bin-2.svg';
 import ChevronUpIcon from '@/public/icons/line-md_chevron-up.svg';
 import ChevronDownIcon from '@/public/icons/chevron-down.svg';
 import ReloadIcon from '@/public/icons/streamline_arrow-reload-horizontal-2.svg';
-import Popup from '@/components/Popup';
-import SlideUp from '@/components/SlideUp';
+import BotIcon from '@/public/icons/bot.svg';
+import ClockIcon from '@/public/icons/streamline-flex_time-lapse.svg';
 
 const SuggestedPrompts: React.FC = () => {
   const [open, setOpen] = useState(true);
@@ -84,13 +85,31 @@ const SuggestedPrompts: React.FC = () => {
   );
 };
 
-export default function Home({ params }: { params: { slug: string } }) {
+export default function ChatPage({ params }: { params: { slug: string } }) {
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
   const [reasonClarity, setReasonClarity] = useState(false);
   const [reasonNotHelpful, setReasonNotHelpful] = useState(false);
   const [reasonNotUnsafe, setReasonNotUnsafe] = useState(false);
+
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedTranslation, setSelectedTranslation] = useState<{
+    fromLang: string;
+    toLang: string;
+    sourceText: string;
+    translatedText: string;
+  } | null>(null);
+
+  const openTranslationDetails = (data: {
+    fromLang: string;
+    toLang: string;
+    sourceText: string;
+    translatedText: string;
+  }) => {
+    setSelectedTranslation(data);
+    setDetailsOpen(true);
+  };
 
   const onClickDislike = () => {
     setIsFeedbackOpen(true);
@@ -117,103 +136,6 @@ export default function Home({ params }: { params: { slug: string } }) {
 
   return (
     <>
-      {/* Sidebar */}
-      <div className="relative z-21 h-full w-[297px] shrink-0 overflow-hidden bg-[#FBFBFB] max-md:hidden">
-        <div className="relative flex h-full flex-col">
-          <div className="h-full w-full overflow-x-clip overflow-y-auto text-clip whitespace-nowrap opacity-100">
-            <nav className="relative flex h-full w-full flex-1 flex-col overflow-y-auto transition-opacity [scrollbar-gutter:stable_both-edges]">
-              <div className="sticky top-0 z-30 bg-[#FBFBFB] px-2 pb-10">
-                <div className="flex h-[68px] items-center justify-between border-b border-gray-100">
-                  <Link href="/">
-                    <Image src="/logo.svg" alt="logo" width={128} height={32} />
-                  </Link>
-
-                  <Button
-                    size="sm"
-                    aria-label="Search"
-                    className="hover:bg-gray-50 active:bg-gray-200"
-                    variant="plain"
-                    leftIcon={<MagnifierIcon />}
-                  />
-                </div>
-
-                <Button
-                  variant="primary"
-                  className="mt-4 w-full text-base font-bold"
-                  leftIcon={<PlusIcon />}
-                >
-                  New chat
-                </Button>
-              </div>
-
-              <div className="px-2">
-                {/* Today */}
-                <div className="mt-4">
-                  <div className="px-2 pb-2 text-base font-bold">Today</div>
-                  <div className="flex flex-col gap-4">
-                    <ChatHistoryItem label="Helpful AI Ready" href="/c/1" />
-                    <ChatHistoryItem label="Greenhouse Effect Expla..." />
-                    <ChatHistoryItem label="Movie Streaming Help" />
-                  </div>
-                </div>
-
-                {/* Previous 7 days */}
-                <div className="mt-6">
-                  <div className="px-2 pb-2 text-base font-bold">
-                    Previous 7 days
-                  </div>
-                  <div className="flex flex-col gap-4">
-                    <ChatHistoryItem label="Web Design Workflow" />
-                    <ChatHistoryItem label="Photo generation" />
-                    <ChatHistoryItem label="Cats eat grass" />
-                    <ChatHistoryItem label="Weather Dynamics" active />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grow px-2"></div>
-
-              <div className="bg-token-bg-elevated-secondary sticky bottom-0 z-30 px-2 py-1.5 empty:hidden">
-                <div className="flex flex-col items-start gap-y-2.5 rounded-2xl bg-white px-2 py-4">
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-500 text-white">
-                      <UserIcon />
-                    </span>
-                    <div>
-                      <div className="text-base font-semibold">Emily</div>
-                    </div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-10 w-full font-bold whitespace-nowrap"
-                    rightIcon={
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 18 18"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6.75 13.5L11.25 9L6.75 4.5"
-                          stroke="#0070F0"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    }
-                  >
-                    Upgrade to pro
-                  </Button>
-                </div>
-              </div>
-            </nav>
-          </div>
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="relative flex h-full max-w-full flex-1 flex-col">
         {/* Header */}
@@ -223,32 +145,41 @@ export default function Home({ params }: { params: { slug: string } }) {
             'min-[1650px]:absolute min-[1650px]:border-transparent min-[1650px]:bg-transparent',
           )}
         >
-          <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-bold">Weather Dynamics</h2>
-            <Button
-              variant="plain"
-              size="md"
-              className="hover:bg-gray-50 active:bg-gray-200"
-              leftIcon={<PencilIcon />}
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="primary" size="md" leftIcon={<CategoryIcon />}>
-              Plugins
-            </Button>
+          <div className="hidden w-full items-center justify-between gap-4 lg:flex">
+            <div className="flex items-center gap-4">
+              <h2 className="text-2xl font-bold">Weather Dynamics</h2>
+              <Button
+                variant="plain"
+                size="md"
+                className="hover:bg-gray-50 active:bg-gray-200"
+                leftIcon={<PencilIcon />}
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <Button variant="primary" size="md" leftIcon={<CategoryIcon />}>
+                Plugins
+              </Button>
 
-            <Button
-              variant="plain"
-              size="md"
-              className="hover:bg-gray-50 active:bg-gray-200"
-              leftIcon={<ShareIcon />}
-            />
-            <Button
-              variant="plain"
-              size="md"
-              className="hover:bg-gray-50 active:bg-gray-200"
-              leftIcon={<RecycleBinIcon />}
-            />
+              <Button
+                variant="plain"
+                size="md"
+                className="hover:bg-gray-50 active:bg-gray-200"
+                leftIcon={<ShareIcon />}
+              />
+              <Button
+                variant="plain"
+                size="md"
+                className="hover:bg-gray-50 active:bg-gray-200"
+                leftIcon={<RecycleBinIcon />}
+              />
+            </div>
+          </div>
+
+          <div className="flex w-full items-center justify-center gap-2 lg:hidden">
+            <span className="rounded-full bg-blue-50 p-2 text-blue-500">
+              <BotIcon />
+            </span>
+            <h2 className="text-base font-bold">JR TextBot</h2>
           </div>
         </div>
 
@@ -374,13 +305,13 @@ export default function Home({ params }: { params: { slug: string } }) {
                 </div>
               </div>
 
+              {/* Bottom composer */}
               <div className="relative z-10 flex w-full basis-auto flex-col gap-4 px-4">
-                {/* Bottom composer */}
-                <div className="mx-auto flex w-full max-w-[768px] gap-4">
+                <div className="mx-auto flex w-full max-w-[768px] items-center justify-between gap-4">
                   <TextInput
                     leftIcon={
                       <Button
-                        className="h-12 w-12 px-0"
+                        className="h-9 w-9 px-0 md:h-12 md:w-12"
                         variant="secondary"
                         aria-label="Open voice input"
                         onClick={() => setVoiceOpen(true)}
@@ -389,11 +320,15 @@ export default function Home({ params }: { params: { slug: string } }) {
                       </Button>
                     }
                     placeholder="Create an HD wallpaper cat licking paw images"
-                    containerClassName="pl-1 flex-1"
+                    className="h-10 text-sm md:h-14 md:text-base"
+                    containerClassName="pl-0.5 md:pl-1 flex-1"
                     aria-label="message-input"
                   />
 
-                  <Button className="h-14 w-14 px-0" variant="primary">
+                  <Button
+                    className="h-10 w-10 px-0 md:h-14 md:w-14"
+                    variant="primary"
+                  >
                     <SendIcon />
                   </Button>
                 </div>
@@ -403,10 +338,9 @@ export default function Home({ params }: { params: { slug: string } }) {
                   <p>
                     StormBot may produce inaccurate information about people,
                     places, or fact.{' '}
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a href="#">
+                    <Link href="#">
                       <b className="underline">Privacy Notice</b>
-                    </a>
+                    </Link>
                   </p>
                 </div>
               </div>
@@ -415,25 +349,124 @@ export default function Home({ params }: { params: { slug: string } }) {
         </main>
       </div>
 
-      {/* Voice input SlideUp */}
-      <SlideUp open={voiceOpen} onClose={() => setVoiceOpen(false)}>
-        <div className="flex flex-col items-center justify-center gap-8 py-6">
-          <div className="relative flex h-56 w-56 items-center justify-center">
-            <span className="absolute inset-0 rounded-full border-4 border-blue-300/70" />
-            <span className="absolute inset-6 rounded-full bg-gray-100" />
+      {/* Voice input slide-up */}
+      <SlideUp open={voiceOpen} onClose={() => setVoiceOpen(false)} fullScreen>
+        <div className="mx-auto flex h-full max-w-[1440px] flex-col">
+          <div className="flex items-center justify-between p-6">
+            <div className="flex items-center gap-2">
+              <Button variant="outline" className="bg-blue-50">
+                <span className="flex items-center gap-3 text-base font-bold">
+                  <span>EN</span>
+                  <ChevronRight className="h-4 w-4" />
+                  <span>JP</span>
+                </span>
+              </Button>
+
+              <Button variant="plain" leftIcon={<ChevronDownIcon />} />
+            </div>
+
             <Button
-              variant="primary"
-              size="xl"
-              className="h-24 w-24 rounded-full shadow-lg"
-            >
-              <MicIcon />
-            </Button>
+              leftIcon={<ChevronDownIcon />}
+              variant="plain"
+              onClick={() => setVoiceOpen(false)}
+            />
+
+            <div className="flex items-center gap-2">
+              <Button variant="outline" className="bg-blue-50">
+                <span className="flex items-center gap-3 text-base font-bold">
+                  <span>JP</span>
+                  <ChevronRight className="h-4 w-4" />
+                  <span>EN</span>
+                </span>
+              </Button>
+
+              <Button variant="plain" leftIcon={<ChevronDownIcon />} />
+            </div>
           </div>
-          <div className="text-center text-sm text-gray-500">
-            Tap to start speaking. We’ll transcribe your voice to text.
+
+          <div className="flex grow flex-col overflow-auto">
+            <div className="flex grow flex-col items-center justify-center">
+              <Recorder />
+            </div>
+
+            <div className="flex flex-col gap-6 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <ClockIcon />
+                  <p className="text-2xl font-bold">Translation history</p>
+                </div>
+
+                <Button
+                  variant="outline"
+                  className="border-gray-400 bg-gray-50 text-gray-500 hover:bg-gray-100 active:bg-gray-200"
+                >
+                  View All
+                </Button>
+              </div>
+
+              <div className="jsutify-between flex w-full flex-wrap gap-4">
+                <TranslationHistoryCard
+                  fromLang="EN"
+                  toLang="JP"
+                  sourceText="こんにちは、初めまして"
+                  translatedText="Hello, nice to meet you"
+                  className="grow cursor-pointer hover:bg-gray-50 active:bg-gray-100"
+                  onClick={() =>
+                    openTranslationDetails({
+                      fromLang: 'EN',
+                      toLang: 'JP',
+                      sourceText: 'こんにちは、初めまして',
+                      translatedText: 'Hello, nice to meet you',
+                    })
+                  }
+                />
+
+                <TranslationHistoryCard
+                  fromLang="EN"
+                  toLang="JP"
+                  sourceText="こんにちは、初めまして"
+                  translatedText="Hello, nice to meet you"
+                  className="grow cursor-pointer hover:bg-gray-50 active:bg-gray-100"
+                  onClick={() =>
+                    openTranslationDetails({
+                      fromLang: 'EN',
+                      toLang: 'JP',
+                      sourceText: 'こんにちは、初めまして',
+                      translatedText: 'Hello, nice to meet you',
+                    })
+                  }
+                />
+
+                <TranslationHistoryCard
+                  fromLang="EN"
+                  toLang="JP"
+                  sourceText="こんにちは、初めまして"
+                  translatedText="Hello, nice to meet you"
+                  className="grow cursor-pointer hover:bg-gray-50 active:bg-gray-100"
+                  onClick={() =>
+                    openTranslationDetails({
+                      fromLang: 'EN',
+                      toLang: 'JP',
+                      sourceText: 'こんにちは、初めまして',
+                      translatedText: 'Hello, nice to meet you',
+                    })
+                  }
+                />
+              </div>
+            </div>
           </div>
         </div>
       </SlideUp>
+
+      {/* Translation Details (on card click) */}
+      <TranslationDetails
+        open={detailsOpen}
+        onClose={() => setDetailsOpen(false)}
+        fromLang={selectedTranslation?.fromLang}
+        toLang={selectedTranslation?.toLang}
+        sourceText={selectedTranslation?.sourceText}
+        translatedText={selectedTranslation?.translatedText}
+      />
 
       {/* Feedback Popup */}
       <Popup
