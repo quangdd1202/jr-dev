@@ -37,6 +37,26 @@ function groupConversations(list: ConversationSummary[]): GroupedConversations {
   return { today, previous7Days };
 }
 
+function formatTimestamp(iso: string): string {
+  const d = new Date(iso);
+  const now = new Date();
+  const isSameDay =
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate();
+
+  if (isSameDay) {
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  const isSameYear = d.getFullYear() === now.getFullYear();
+  return d.toLocaleDateString([], {
+    month: 'short',
+    day: 'numeric',
+    year: isSameYear ? undefined : 'numeric',
+  });
+}
+
 const SidebarHistory: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<ConversationSummary[]>([]);
@@ -110,6 +130,7 @@ const SidebarHistory: React.FC = () => {
                 label={c.title}
                 href={`/c/${c.id}`}
                 active={c.id === currentSlug}
+                rightText={formatTimestamp(c.createdAt)}
               />
             ))}
           </div>
@@ -127,6 +148,7 @@ const SidebarHistory: React.FC = () => {
                 label={c.title}
                 href={`/c/${c.id}`}
                 active={c.id === currentSlug}
+                rightText={formatTimestamp(c.createdAt)}
               />
             ))}
           </div>

@@ -81,12 +81,12 @@ export default function NewChatPage() {
             </div>
           </div>
 
-          <div className="flex w-full items-center justify-center gap-2 lg:hidden">
+          <Link href="/" className="flex w-full items-center justify-center gap-2 lg:hidden">
             <span className="rounded-full bg-blue-50 p-2 text-blue-500">
               <BotIcon />
             </span>
             <h2 className="text-base font-bold">JR TextBot</h2>
-          </div>
+          </Link>
         </div>
 
         <main className="relative h-full w-full flex-1 overflow-auto">

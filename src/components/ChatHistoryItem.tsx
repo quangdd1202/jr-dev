@@ -14,6 +14,8 @@ export interface ChatHistoryItemProps {
   icon?: ReactNode;
   /** Mark item as active/selected. */
   active?: boolean;
+  /** Optional right-side text (e.g., timestamp). */
+  rightText?: ReactNode;
   /** Optional click handler (row becomes button-like). */
   onClick?: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
   /** When provided, the item renders as a Next.js Link for navigation. */
@@ -30,13 +32,15 @@ export interface ChatHistoryItemProps {
  * ChatHistoryItem
  * Small row used in a sidebar list of conversations.
  * - Left: 24px icon (uses a default when none provided)
- * - Right: single-line text that truncates with ellipsis
+ * - Center: single-line title (truncated)
+ * - Right: optional timestamp/meta text
  * - Renders a Next.js <Link> when href is provided (supports prefetch)
  */
 export const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
   label,
   icon,
   active,
+  rightText,
   onClick,
   href,
   prefetch = true,
@@ -44,16 +48,16 @@ export const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
   ariaLabel,
 }) => {
   const classes = twclsx(
-    'flex items-center gap-3 rounded-lg px-3 py-2',
-    'cursor-pointer select-none',
+    'flex items-center justify-between rounded-lg px-3 py-2',
+    'cursor-pointer select-none gap-3',
     'text-[#090A0A] hover:bg-gray-200 active:bg-gray-200',
     active &&
       'font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 active:bg-blue-200',
     className,
   );
 
-  const content = (
-    <>
+  const left = (
+    <div className="flex min-w-0 items-center gap-3">
       {/* Left icon */}
       <div
         className={twclsx(
@@ -64,10 +68,28 @@ export const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
         {icon || <AiScannerRobotIcon />}
       </div>
 
-      {/* Right label (truncated) */}
+      {/* Title (truncated) */}
       <div className="min-w-0 flex-1">
         <span className="block truncate text-left">{label}</span>
       </div>
+    </div>
+  );
+
+  const right = rightText ? (
+    <div
+      className={twclsx(
+        'shrink-0 pl-2 text-xs',
+        active ? 'text-blue-600' : 'text-gray-500',
+      )}
+    >
+      {rightText}
+    </div>
+  ) : null;
+
+  const content = (
+    <>
+      {left}
+      {right}
     </>
   );
 
