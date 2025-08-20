@@ -53,7 +53,7 @@ export default function NewChatPage() {
         >
           <div className="hidden w-full items-center justify-between gap-4 lg:flex">
             <div className="flex items-center gap-4">
-              <h2 className="text-2xl font-bold">Weather Dynamics</h2>
+              <h2 className="text-2xl font-bold">New Chat</h2>
               <Button
                 variant="plain"
                 size="md"

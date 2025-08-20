@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import Button from '@/components/Button';
@@ -12,6 +12,10 @@ import Recorder from '@/components/Recorder';
 import TranslationHistoryCard from '@/components/TranslationHistoryCard';
 import TranslationDetails from '@/components/TranslationDetails';
 import { twclsx } from '@/utils/twclsx';
+import {
+  fetchConversationBySlug,
+  type Conversation,
+} from '@/mocks/conversations';
 import SendIcon from '@/public/icons/send.svg';
 import MicIcon from '@/public/icons/microphone.svg';
 import PencilIcon from '@/public/icons/streamline_pencil.svg';
@@ -85,7 +89,38 @@ const SuggestedPrompts: React.FC = () => {
   );
 };
 
-export default function ChatPage({ params }: { params: { slug: string } }) {
+export default function ChatPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = React.use(params);
+  const [loading, setLoading] = useState(true);
+  const [conversation, setConversation] = useState<Conversation | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const data = await fetchConversationBySlug(slug);
+        if (mounted) {
+          setConversation(data);
+        }
+      } catch (error) {
+        if (mounted && error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError('An unknown error occurred.');
+        }
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [slug]);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
@@ -129,7 +164,7 @@ export default function ChatPage({ params }: { params: { slug: string } }) {
         notHelpful: reasonNotHelpful,
         notUnsafe: reasonNotUnsafe,
       },
-      slug: params.slug,
+      slug,
     });
     setIsFeedbackOpen(false);
   };
@@ -147,7 +182,9 @@ export default function ChatPage({ params }: { params: { slug: string } }) {
         >
           <div className="hidden w-full items-center justify-between gap-4 lg:flex">
             <div className="flex items-center gap-4">
-              <h2 className="text-2xl font-bold">Weather Dynamics</h2>
+              <h2 className="text-2xl font-bold">
+                {conversation?.title || 'Loading'}
+              </h2>
               <Button
                 variant="plain"
                 size="md"
@@ -190,114 +227,31 @@ export default function ChatPage({ params }: { params: { slug: string } }) {
               <div className="relative flex grow basis-auto flex-col overflow-auto px-4 [scrollbar-gutter:stable_both-edges] min-[1650px]:pt-[68px]">
                 <div className="mx-auto w-full max-w-[768px]">
                   <div className="space-y-3">
-                    <ConversationChatItem sender="user">
-                      Why does the weather not just stay the same?
-                    </ConversationChatItem>
-
-                    <ConversationChatItem
-                      sender="assistant"
-                      onDislike={onClickDislike}
-                    >
-                      The two main reasons why the weather does not stay the
-                      same are: Atmospheric Dynamics: The Earth&apos;s
-                      atmosphere is constantly in motion due to various factors
-                      like air circulation, pressure systems, and the
-                      interaction of different air masses. These dynamic
-                      processes lead to continuous changes in weather patterns
-                      as air masses move, mix, and create variations in
-                      temperature, pressure, and humidity. Solar Influence: The
-                      Sun is the primary driver of weather patterns on Earth.
-                      Solar radiation heats the Earth unevenly due to its
-                      curvature and axial tilt, leading to temperature gradients
-                      across different regions. This differential heating causes
-                      air to rise, creating low-pressure areas, and air to sink,
-                      forming high-pressure areas, which influence the movement
-                      of air masses and weather patterns.
-                    </ConversationChatItem>
-
-                    <ConversationChatItem
-                      sender="assistant"
-                      onDislike={onClickDislike}
-                    >
-                      The two main reasons why the weather does not stay the
-                      same are: Atmospheric Dynamics: The Earth&apos;s
-                      atmosphere is constantly in motion due to various factors
-                      like air circulation, pressure systems, and the
-                      interaction of different air masses. These dynamic
-                      processes lead to continuous changes in weather patterns
-                      as air masses move, mix, and create variations in
-                      temperature, pressure, and humidity. Solar Influence: The
-                      Sun is the primary driver of weather patterns on Earth.
-                      Solar radiation heats the Earth unevenly due to its
-                      curvature and axial tilt, leading to temperature gradients
-                      across different regions. This differential heating causes
-                      air to rise, creating low-pressure areas, and air to sink,
-                      forming high-pressure areas, which influence the movement
-                      of air masses and weather patterns.
-                    </ConversationChatItem>
-
-                    <ConversationChatItem
-                      sender="assistant"
-                      onDislike={onClickDislike}
-                    >
-                      The two main reasons why the weather does not stay the
-                      same are: Atmospheric Dynamics: The Earth&apos;s
-                      atmosphere is constantly in motion due to various factors
-                      like air circulation, pressure systems, and the
-                      interaction of different air masses. These dynamic
-                      processes lead to continuous changes in weather patterns
-                      as air masses move, mix, and create variations in
-                      temperature, pressure, and humidity. Solar Influence: The
-                      Sun is the primary driver of weather patterns on Earth.
-                      Solar radiation heats the Earth unevenly due to its
-                      curvature and axial tilt, leading to temperature gradients
-                      across different regions. This differential heating causes
-                      air to rise, creating low-pressure areas, and air to sink,
-                      forming high-pressure areas, which influence the movement
-                      of air masses and weather patterns.
-                    </ConversationChatItem>
-
-                    <ConversationChatItem
-                      sender="assistant"
-                      onDislike={onClickDislike}
-                    >
-                      The two main reasons why the weather does not stay the
-                      same are: Atmospheric Dynamics: The Earth&apos;s
-                      atmosphere is constantly in motion due to various factors
-                      like air circulation, pressure systems, and the
-                      interaction of different air masses. These dynamic
-                      processes lead to continuous changes in weather patterns
-                      as air masses move, mix, and create variations in
-                      temperature, pressure, and humidity. Solar Influence: The
-                      Sun is the primary driver of weather patterns on Earth.
-                      Solar radiation heats the Earth unevenly due to its
-                      curvature and axial tilt, leading to temperature gradients
-                      across different regions. This differential heating causes
-                      air to rise, creating low-pressure areas, and air to sink,
-                      forming high-pressure areas, which influence the movement
-                      of air masses and weather patterns.
-                    </ConversationChatItem>
-
-                    <ConversationChatItem
-                      sender="assistant"
-                      onDislike={onClickDislike}
-                    >
-                      The two main reasons why the weather does not stay the
-                      same are: Atmospheric Dynamics: The Earth&apos;s
-                      atmosphere is constantly in motion due to various factors
-                      like air circulation, pressure systems, and the
-                      interaction of different air masses. These dynamic
-                      processes lead to continuous changes in weather patterns
-                      as air masses move, mix, and create variations in
-                      temperature, pressure, and humidity. Solar Influence: The
-                      Sun is the primary driver of weather patterns on Earth.
-                      Solar radiation heats the Earth unevenly due to its
-                      curvature and axial tilt, leading to temperature gradients
-                      across different regions. This differential heating causes
-                      air to rise, creating low-pressure areas, and air to sink,
-                      forming high-pressure areas, which influence the movement
-                      of air masses and weather patterns.
-                    </ConversationChatItem>
+                    {loading && (
+                      <div className="text-sm text-gray-500">
+                        Loading chat history...
+                      </div>
+                    )}
+                    {error && (
+                      <div className="text-sm text-red-600">{error}</div>
+                    )}
+                    {!loading && !error && conversation && (
+                      <>
+                        {conversation.messages.map((m) => (
+                          <ConversationChatItem
+                            key={m.id}
+                            sender={m.sender}
+                            onDislike={
+                              m.sender === 'assistant'
+                                ? onClickDislike
+                                : undefined
+                            }
+                          >
+                            {m.content}
+                          </ConversationChatItem>
+                        ))}
+                      </>
+                    )}
                   </div>
 
                   {/* Suggested Prompts */}
