@@ -81,7 +81,10 @@ export default function NewChatPage() {
             </div>
           </div>
 
-          <Link href="/" className="flex w-full items-center justify-center gap-2 lg:hidden">
+          <Link
+            href="/"
+            className="flex w-full items-center justify-center gap-2 lg:hidden"
+          >
             <span className="rounded-full bg-blue-50 p-2 text-blue-500">
               <BotIcon />
             </span>
