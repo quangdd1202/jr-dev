@@ -4,7 +4,7 @@ import './globals.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import Button from '@/components/Button';
-import ChatHistoryItem from '@/components/ChatHistoryItem';
+import SidebarHistory from '@/components/SidebarHistory';
 import MagnifierIcon from '@/public/icons/streamline-flex_magnifying-glass.svg';
 import PlusIcon from '@/public/icons/streamline-flex_hospital-sign.svg';
 import UserIcon from '@/public/icons/streamline_user-multiple-group.svg';
@@ -65,35 +65,7 @@ export default function RootLayout({
                         </Link>
                       </div>
 
-                      <div className="px-2">
-                        {/* Today */}
-                        <div className="mt-4">
-                          <div className="px-2 pb-2 text-base font-bold">
-                            Today
-                          </div>
-                          <div className="flex flex-col gap-4">
-                            <ChatHistoryItem
-                              label="Helpful AI Ready"
-                              href="/c/1"
-                            />
-                            <ChatHistoryItem label="Greenhouse Effect Expla..." />
-                            <ChatHistoryItem label="Movie Streaming Help" />
-                          </div>
-                        </div>
-
-                        {/* Previous 7 days */}
-                        <div className="mt-6">
-                          <div className="px-2 pb-2 text-base font-bold">
-                            Previous 7 days
-                          </div>
-                          <div className="flex flex-col gap-4">
-                            <ChatHistoryItem label="Web Design Workflow" />
-                            <ChatHistoryItem label="Photo generation" />
-                            <ChatHistoryItem label="Cats eat grass" />
-                            <ChatHistoryItem label="Weather Dynamics" active />
-                          </div>
-                        </div>
-                      </div>
+                      <SidebarHistory />
 
                       <div className="grow px-2"></div>
 
