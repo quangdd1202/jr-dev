@@ -28,6 +28,36 @@ import ReloadIcon from '@/public/icons/streamline_arrow-reload-horizontal-2.svg'
 import BotIcon from '@/public/icons/bot.svg';
 import ClockIcon from '@/public/icons/streamline-flex_time-lapse.svg';
 
+// Timestamp helpers for chat
+function formatTimestampLabel(iso: string): string {
+  const d = new Date(iso);
+  const now = new Date();
+  const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const targetStart = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diffMs = todayStart.getTime() - targetStart.getTime();
+  const diffDays = Math.round(diffMs / (24 * 60 * 60 * 1000));
+
+  if (diffDays === 0) return `${time} Today`;
+  if (diffDays === 1) return `${time} Yesterday`;
+
+  const datePart = d.toLocaleDateString([], {
+    month: 'short',
+    day: 'numeric',
+    year: d.getFullYear() === now.getFullYear() ? undefined : 'numeric',
+  });
+  return `${time} ${datePart}`;
+}
+
+const TimestampChip: React.FC<{ label: string }> = ({ label }) => (
+  <div className="flex w-full justify-center py-1.5">
+    <span className="rounded-full bg-gray-300 px-3 py-0.5 text-xs font-medium text-white">
+      {label}
+    </span>
+  </div>
+);
+
 const SuggestedPrompts: React.FC = () => {
   const [open, setOpen] = useState(true);
   const prompts = [
@@ -212,12 +242,15 @@ export default function ChatPage({
             </div>
           </div>
 
-          <div className="flex w-full items-center justify-center gap-2 lg:hidden">
+          <Link
+            href="/"
+            className="flex w-full items-center justify-center gap-2 lg:hidden"
+          >
             <span className="rounded-full bg-blue-50 p-2 text-blue-500">
               <BotIcon />
             </span>
             <h2 className="text-base font-bold">JR TextBot</h2>
-          </div>
+          </Link>
         </div>
 
         <main className="relative h-full w-full flex-1 overflow-auto">
@@ -237,19 +270,38 @@ export default function ChatPage({
                     )}
                     {!loading && !error && conversation && (
                       <>
-                        {conversation.messages.map((m) => (
-                          <ConversationChatItem
-                            key={m.id}
-                            sender={m.sender}
-                            onDislike={
-                              m.sender === 'assistant'
-                                ? onClickDislike
-                                : undefined
-                            }
-                          >
-                            {m.content}
-                          </ConversationChatItem>
-                        ))}
+                        {conversation.messages.map((m, index) => {
+                          const prev = conversation.messages[index - 1];
+
+                          const isNewDay = (() => {
+                            if (!prev) return true; // show before first message
+                            const d1 = new Date(prev.createdAt);
+                            const d2 = new Date(m.createdAt);
+                            return (
+                              d1.getFullYear() !== d2.getFullYear() ||
+                              d1.getMonth() !== d2.getMonth() ||
+                              d1.getDate() !== d2.getDate()
+                            );
+                          })();
+
+                          const label = formatTimestampLabel(m.createdAt);
+
+                          return (
+                            <React.Fragment key={m.id}>
+                              {isNewDay && <TimestampChip label={label} />}
+                              <ConversationChatItem
+                                sender={m.sender}
+                                onDislike={
+                                  m.sender === 'assistant'
+                                    ? onClickDislike
+                                    : undefined
+                                }
+                              >
+                                {m.content}
+                              </ConversationChatItem>
+                            </React.Fragment>
+                          );
+                        })}
                       </>
                     )}
                   </div>

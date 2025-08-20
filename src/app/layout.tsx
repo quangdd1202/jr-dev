@@ -8,6 +8,7 @@ import SidebarHistory from '@/components/SidebarHistory';
 import MagnifierIcon from '@/public/icons/streamline-flex_magnifying-glass.svg';
 import PlusIcon from '@/public/icons/streamline-flex_hospital-sign.svg';
 import UserIcon from '@/public/icons/streamline_user-multiple-group.svg';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const openSans = Open_Sans({
   variable: '--font-open-sans',
@@ -113,6 +114,7 @@ export default function RootLayout({
               </div>
 
               {children}
+              <SpeedInsights />
             </div>
           </div>
         </div>

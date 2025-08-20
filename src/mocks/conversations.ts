@@ -35,21 +35,74 @@ const MOCK_CONVERSATIONS: Conversation[] = [
         id: 'm1',
         sender: 'user',
         content: 'Why does the weather not just stay the same?',
-        createdAt: minutesAgo(29),
+        createdAt: minutesAgo(1800), // ~30 hours ago
       },
       {
         id: 'm2',
         sender: 'assistant',
         content:
-          'The two main reasons why the weather does not stay the same are: Atmospheric Dynamics and Solar Influence...',
-        createdAt: minutesAgo(28),
+          "Great question! Weather constantly changes due to the atmosphere being a dynamic fluid driven by uneven heating from the Sun, Earth's rotation, and topography.",
+        createdAt: minutesAgo(1785),
       },
       {
         id: 'm3',
+        sender: 'user',
+        content: 'What do you mean by uneven heating?',
+        createdAt: minutesAgo(1770),
+      },
+      {
+        id: 'm4',
+        sender: 'assistant',
+        content:
+          'Different places get different amounts of sunlight (day/night, seasons, latitude). That creates temperature and pressure differences, moving air and moisture around.',
+        createdAt: minutesAgo(1765),
+      },
+      {
+        id: 'm5',
+        sender: 'assistant',
+        content:
+          'Those differences drive circulation cells (Hadley/Ferrel/Polar), jet streams, and storm tracks — constantly mixing the atmosphere.',
+        createdAt: minutesAgo(1760),
+      },
+      {
+        id: 'm6',
+        sender: 'user',
+        content: 'Does the ocean affect this too?',
+        createdAt: minutesAgo(1750),
+      },
+      {
+        id: 'm7',
+        sender: 'assistant',
+        content:
+          'Absolutely. Oceans store and transport heat. Phenomena like El Niño/La Niña shift rainfall and temperature patterns across the globe.',
+        createdAt: minutesAgo(1745),
+      },
+      {
+        id: 'm8',
+        sender: 'user',
+        content: 'Okay, and today specifically?',
+        createdAt: minutesAgo(60),
+      },
+      {
+        id: 'm9',
+        sender: 'assistant',
+        content:
+          'Today a low-pressure system is moving east, pulling in moist air — expect scattered showers and a cooling trend this evening.',
+        createdAt: minutesAgo(55),
+      },
+      {
+        id: 'm10',
+        sender: 'assistant',
+        content:
+          'The two main reasons why the weather does not stay the same are: Atmospheric Dynamics and Solar Influence...',
+        createdAt: minutesAgo(54),
+      },
+      {
+        id: 'm11',
         sender: 'assistant',
         content:
           'Solar radiation heats the Earth unevenly leading to pressure systems that drive weather patterns.',
-        createdAt: minutesAgo(27),
+        createdAt: minutesAgo(53),
       },
     ],
   },
